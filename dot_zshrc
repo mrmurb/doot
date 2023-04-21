@@ -1,72 +1,33 @@
-### Added by Zinit's installer
-if [[ ! -f $HOME/.local/share/zinit/zinit.git/zinit.zsh ]]; then
-    print -P "%F{33} %F{220}Installing %F{33}ZDHARMA-CONTINUUM%F{220} Initiative Plugin Manager (%F{33}zdharma-continuum/zinit%F{220})…%f"
-    command mkdir -p "$HOME/.local/share/zinit" && command chmod g-rwX "$HOME/.local/share/zinit"
-    command git clone https://github.com/zdharma-continuum/zinit "$HOME/.local/share/zinit/zinit.git" && \
-        print -P "%F{33} %F{34}Installation successful.%f%b" || \
-        print -P "%F{160} The clone has failed.%f%b"
+ZIM_HOME=$HOME/.zim
+
+if [[ ! -e ${ZIM_HOME}/zimfw.zsh ]]; then
+  curl -fsSL --create-dirs -o ${ZIM_HOME}/zimfw.zsh \
+      https://github.com/zimfw/zimfw/releases/latest/download/zimfw.zsh
 fi
 
-source "$HOME/.local/share/zinit/zinit.git/zinit.zsh"
-autoload -Uz _zinit
-(( ${+_comps} )) && _comps[zinit]=_zinit
-
-# Load a few important annexes, without Turbo
-# (this is currently required for annexes)
-zinit light-mode for \
-    zdharma-continuum/zinit-annex-as-monitor \
-    zdharma-continuum/zinit-annex-bin-gem-node \
-    zdharma-continuum/zinit-annex-patch-dl \
-    zdharma-continuum/zinit-annex-rust
-
-### End of Zinit's installer chunk
-zinit add-fpath -f $(brew --prefix)/share/zsh/site-functions
-
-zinit ice as"command" from"gh-r" \
-    atclone"./starship init zsh > init.zsh; ./starship completions zsh > _starship" \
-    atpull"%atclone" \
-    src"init.zsh"
-zinit light starship/starship
-
-zinit light-mode for \
-    zsh-users/zsh-autosuggestions \
-    zdharma-continuum/fast-syntax-highlighting
-
-zinit light-mode lucid wait has"kubectl" for \
-    id-as"_kubectl" \
-    as"completion" \
-    nocompile \
-    atclone"kubectl completion zsh > _kubectl" \
-  zdharma-continuum/null
-
-zinit light-mode lucid wait has"cargo" for \
-    id-as"_cargo" \
-    as"completion" \
-    nocompile \
-    atclone"rustup completions zsh cargo > _cargo" \
-  zdharma-continuum/null
-
-zinit light-mode lucid wait has"rustup" for \
-    id-as"_rustup" \
-    as"completion" \
-    nocompile \
-    atclone"rustup completions zsh > _rustup" \
-  zdharma-continuum/null
-
-zinit ice atload"zicompinit; zicdreplay"
-zinit snippet OMZP::dotnet
-
-zinit snippet OMZL::theme-and-appearance.zsh
-zinit snippet OMZL::directories.zsh
-
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
-
-export PATH=$HOME/go/bin:$PATH
-
-alias vim=nvim
-
-if [[ `uname` == "Darwin" ]]; then
-  alias tailscale="/Applications/Tailscale.app/Contents/MacOS/Tailscale"
+if [[ ! ${ZIM_HOME}/init.zsh -nt ${ZDOTDIR:-${HOME}}/.zimrc ]]; then
+  source ${ZIM_HOME}/zimfw.zsh init -q
 fi
+
+source ${ZIM_HOME}/init.zsh
+
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# Keybinds
+bindkey '^[[A' history-substring-search-up
+bindkey '^[OA' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
+bindkey '^[OB' history-substring-search-down
+
+# Aliases
+alias vim='nvim'
+alias la='ls -ahl'
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
