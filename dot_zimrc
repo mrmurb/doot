@@ -1,7 +1,21 @@
+#!/bin/bash
+
 zmodule environment
 zmodule input
 zmodule termtitle
 zmodule utility
+
+# completions
+if [[ -d /opt/homebrew/share/zsh ]] && [[ $(uname) == Darwin ]]; then
+    zmodule /opt/homebrew/share/zsh -n homebrew --fpath site-function
+fi
+
+if type "gh" > /dev/null; then
+    zmodule zdharma-continuum/null \
+        -n gh-completion \
+        --on-pull "gh completion -s zsh > _comp" \
+        -s "_comp"
+fi
 
 zmodule zsh-users/zsh-autosuggestions
 zmodule completion
