@@ -3,11 +3,11 @@
 zmodule environment
 zmodule input
 zmodule termtitle
-zmodule utility
 
 # completions
-if [[ -d /opt/homebrew/share/zsh ]] && [[ $(uname) == Darwin ]]; then
-    zmodule /opt/homebrew/share/zsh -n homebrew --fpath site-function
+if type brew &>/dev/null
+then
+    zmodule $(brew --prefix)/share/zsh -n homewbrew --fpath site-functions
 fi
 
 if type "gh" > /dev/null; then
@@ -19,6 +19,7 @@ fi
 
 zmodule zsh-users/zsh-autosuggestions
 zmodule completion
+zmodule utility
 
 zmodule zsh-users/zsh-history-substring-search
 zmodule zsh-users/zsh-syntax-highlighting
