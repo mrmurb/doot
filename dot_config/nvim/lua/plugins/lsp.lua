@@ -18,11 +18,22 @@ return {
             'hrsh7th/nvim-cmp',
             config = function()
                 local cmp = require('cmp')
+                local cmp_action = require('lsp-zero').cmp_action()
 
                 cmp.setup({
+                    preselect = 'item',
+                    completion = {
+                        completeopt = 'menu,menuone,noinsert',
+                    },
                     mapping = {
                         ['<CR>'] = cmp.mapping.confirm(),
                         ['<C-Space>'] = cmp.mapping.complete(),
+                        ['<Tab>'] = cmp_action.tab_complete(),
+                        ['<S-Tab>'] = cmp_action.select_prev_or_fallback(),
+                    },
+                    window = {
+                        completion = cmp.config.window.bordered(),
+                        documentation = cmp.config.window.bordered(),
                     },
                 })
             end,

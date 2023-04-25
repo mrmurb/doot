@@ -1,13 +1,13 @@
 return {
     'nvim-tree/nvim-tree.lua',
-    cmd = { 'NvimTreeToggle', 'NvimTreeOpen', 'NvimTreeFocus', 'NvimTreeFindFileToggle' },
+    keys = {
+        { '<leader>e', vim.cmd.NvimTreeToggle, desc = 'Toggle NvimTree' },
+    },
     config = function()
         require('nvim-tree').setup({
             filters = {
                 dotfiles = true,
             },
         })
-
-        vim.keymap.set('n', '<leader>e', vim.cmd.NvimTreeToggle)
     end,
 }
